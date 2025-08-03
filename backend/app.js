@@ -3,6 +3,8 @@ import fs from 'node:fs/promises';
 import bodyParser from 'body-parser';
 import express from 'express';
 import { resolve } from 'node:path';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -15,6 +17,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to food-ordering-backend' });
+});
+
 
 app.get('/meals', async (req, res) => {
   
@@ -27,7 +33,7 @@ app.post('/orders', async (req, res) => {
   
   const orderData = req.body.order;
   await new Promise((resolve)=>setTimeout(resolve,1000));
-  
+
   if (orderData === null || orderData.items === null || orderData.items.length === 0) {
     return res
       .status(400)
@@ -71,4 +77,11 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
 
-app.listen(3000);
+
+
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
